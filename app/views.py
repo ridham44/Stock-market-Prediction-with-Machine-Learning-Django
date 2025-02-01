@@ -255,6 +255,40 @@ def predict(request, ticker_value, number_of_days):
             Sector = ticker.Sector[i]
             Industry = ticker.Industry[i]
             break
+# ========================================== Shows Differnce ==========================================
+
+    # Get last available closing price from historical data
+    last_closing_price = df['Close'].iloc[-1] if not df.empty else None
+
+    # Ensure forecast length is valid before extracting the last day's prediction
+    if len(forecast) >= forecast_out and last_closing_price is not None:
+        future_date = dt.datetime.today() + dt.timedelta(days=forecast_out)
+        day_last_prediction = round(forecast[forecast_out - 1], 2)
+
+        # Calculate price change
+        price_difference = round(day_last_prediction - last_closing_price, 2)
+        percentage_change = round((price_difference / last_closing_price) * 100, 2)
+
+        # Determine Up/Down status
+        trend = "UP 🔼" if price_difference > 0 else "DOWN 🔻" if price_difference < 0 else "No Change"
+
+        last_prediction_info = {
+            'Date': future_date.strftime('%Y-%m-%d'),
+            'Price': day_last_prediction,
+            'Last_Close': last_closing_price,
+            'Change': price_difference,
+            'Percentage_Change': percentage_change,
+            'Trend': trend
+        }
+    else:
+        last_prediction_info = {
+            'Date': "N/A",
+            'Price': "N/A",
+            'Last_Close': "N/A",
+            'Change': "N/A",
+            'Percentage_Change': "N/A",
+            'Trend': "N/A"
+        }
 
     # ========================================== Page Render section ==========================================
     
