@@ -211,10 +211,14 @@ def predict(request, ticker_value, number_of_days):
     forecast_prediction = clf.predict(X_forecast)
     forecast = forecast_prediction.tolist()
 
+    # Ensure forecast length is valid before extracting the last day's prediction
     if len(forecast) >= forecast_out:
-        day_last_prediction = forecast[forecast_out - 1]
+        future_date = dt.datetime.today() + dt.timedelta(days=forecast_out)
+        day_last_prediction = round(forecast[forecast_out - 1], 2)
+        last_prediction_info = {'Date': future_date.strftime('%Y-%m-%d'), 'Price': day_last_prediction}
     else:
-        day_last_prediction = None
+        last_prediction_info = {'Date': "N/A", 'Price': "N/A"}
+
 
     # ========================================== Plotting predicted data ======================================
 
@@ -260,7 +264,7 @@ def predict(request, ticker_value, number_of_days):
         'plot_div': plot_div,
         'confidence': confidence,
         'forecast': forecast,
-        'day_last_prediction': day_last_prediction,  
+        'last_prediction_info': last_prediction_info,
         'ticker_value': ticker_value,
         'number_of_days': number_of_days,
         'Symbol': Symbol,
