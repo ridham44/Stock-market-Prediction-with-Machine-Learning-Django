@@ -257,6 +257,7 @@ def predict(request, ticker_value, number_of_days):
 
     return render(request, "result.html", context={         
         'plot_div_pred': plot_div_pred,
+        'plot_div': plot_div,
         'confidence': confidence,
         'forecast': forecast,
         'day_last_prediction': day_last_prediction,  
