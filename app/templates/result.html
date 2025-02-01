@@ -165,6 +165,18 @@
                                 </table>
                                 <h3>Prediction for {{ number_of_days }}th Day ({{ last_prediction_info.Date }})</h3>
                                 <p><b>Predicted Price:</b> {{ last_prediction_info.Price }} USD</p>
+                                <p><b>Last Closing Price:</b> {{ last_prediction_info.Last_Close }} USD</p>
+
+                                {% if last_prediction_info.Change != "N/A" %}
+                                <p>
+                                    <b>Change:</b> {{ last_prediction_info.Change }} USD 
+                                </p>
+                                <p>
+                                    <b>Status:</b> {{ last_prediction_info.Trend }}
+                                </p>
+                                {% else %}
+                                <p>No Data Available</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
