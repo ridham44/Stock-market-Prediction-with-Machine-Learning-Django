@@ -163,6 +163,20 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <h3>Prediction for {{ number_of_days }}th Day ({{ last_prediction_info.Date }})</h3>
+                                <p><b>Predicted Price:</b> {{ last_prediction_info.Price }} USD</p>
+                                <p><b>Last Closing Price:</b> {{ last_prediction_info.Last_Close }} USD</p>
+
+                                {% if last_prediction_info.Change != "N/A" %}
+                                <p>
+                                    <b>Change:</b> {{ last_prediction_info.Change }} USD
+                                </p>
+                                <p>
+                                    <b>Status:</b> {{ last_prediction_info.Trend }}
+                                </p>
+                                {% else %}
+                                <p>No Data Available</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -226,43 +240,44 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-<style>
-       .sidebar .navbar .navbar-nav .nav-link:hover,
-    .sidebar .navbar .navbar-nav .nav-link.active {
-      color: #00FFFF;
-      background: var(--dark);
-      border-color: #00FFFF;
-    }
+    <style>
+        .sidebar .navbar .navbar-nav .nav-link:hover,
+        .sidebar .navbar .navbar-nav .nav-link.active {
+            color: #00FFFF;
+            background: var(--dark);
+            border-color: #00FFFF;
+        }
 
-    .content .navbar .navbar-nav .nav-link:hover,
-    .content .navbar .navbar-nav .nav-link.active {
-      color: #00FFFF;
-    }
+        .content .navbar .navbar-nav .nav-link:hover,
+        .content .navbar .navbar-nav .nav-link.active {
+            color: #00FFFF;
+        }
 
-    .bootstrap-datetimepicker-widget table td.active,
-    .bootstrap-datetimepicker-widget table td.active:hover {
-      background: #00FFFF;
-    }
+        .bootstrap-datetimepicker-widget table td.active,
+        .bootstrap-datetimepicker-widget table td.active:hover {
+            background: #00FFFF;
+        }
 
-    .bootstrap-datetimepicker-widget table td.today::before {
-      border-bottom-color: #00FFFF;
-    }
+        .bootstrap-datetimepicker-widget table td.today::before {
+            border-bottom-color: #00FFFF;
+        }
 
-    .testimonial-carousel .owl-dot {
-      position: relative;
-      display: inline-block;
-      margin: 0 5px;
-      width: 15px;
-      height: 15px;
-      border: 5px solid #00FFFF;
-      border-radius: 15px;
-      transition: .5s;
-    }
+        .testimonial-carousel .owl-dot {
+            position: relative;
+            display: inline-block;
+            margin: 0 5px;
+            width: 15px;
+            height: 15px;
+            border: 5px solid #00FFFF;
+            border-radius: 15px;
+            transition: .5s;
+        }
 
-    .testimonial-carousel .owl-dot.active {
-      background: var(--dark);
-      border-color: #00FFFF;}
-</style>
+        .testimonial-carousel .owl-dot.active {
+            background: var(--dark);
+            border-color: #00FFFF;
+        }
+    </style>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

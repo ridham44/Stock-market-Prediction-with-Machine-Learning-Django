@@ -15,6 +15,7 @@ import json
 import yfinance as yf
 import datetime as dt
 import qrcode
+import time
 
 from .models import Project
 
@@ -27,80 +28,132 @@ from sklearn import preprocessing, model_selection, svm
 
 # The Home page when Server loads up
 def index(request):
-    # ================================================= Left Card Plot =========================================================
-    # Here we use yf.download function
-    data = yf.download(
-        
-        # passes the ticker
-        tickers=['AAPL', 'AMZN', 'QCOM', 'META', 'NVDA', 'JPM'],
-        
-        group_by = 'ticker',
-        
-        threads=True, # Set thread value to true
-        
-        # used for access data[ticker]
-        period='1mo', 
-        interval='1d'
+# ================================= Left Plot Section =================================
+# --- 1. Ticker Setup ---
+    tickers_to_plot = ['AAPL', 'AMZN', 'QCOM', 'META', 'NVDA', 'JPM']
+    all_tickers = tickers_to_plot + ['GOOGL', 'UBER', 'TSLA']
     
+    monthly_data = {}        
+    recent_stocks_list = []  
+
+    # --- 2. Data Fetching and Processing Loop ---
+    for ticker in all_tickers:
+        try:
+            df = yf.download(
+                ticker,
+                period='1mo',
+                interval='1d',
+                auto_adjust=False,
+                timeout=60
+            )
+            
+            if not df.empty:
+                # Flatten MultiIndex if needed
+                if isinstance(df.columns, pd.MultiIndex):
+                    df.columns = df.columns.droplevel(1)
+
+                # Store for plotting
+                monthly_data[ticker] = df.reset_index()
+
+                # Take the last available row for the table
+                last_row = df.iloc[-1]
+
+                recent_stocks_list.append({
+                    'Ticker': ticker,
+                    'Date': df.index[-1].strftime('%Y-%m-%d'),
+                    'Open': round(float(last_row['Open']), 2),
+                    'High': round(float(last_row['High']), 2),
+                    'Low': round(float(last_row['Low']), 2),
+                    'Close': round(float(last_row['Close']), 2),
+                    'Adj Close': round(float(last_row['Adj Close']), 2),
+                    'Volume': int(last_row['Volume'])
+                })
+        except Exception as e:
+            print(f"ERROR: {ticker} -> {e}")
+        
+        time.sleep(0.2)  # polite delay
+
+    # --- 3. Plot Creation ---
+    fig_left = go.Figure()
+
+    for ticker in tickers_to_plot:
+        if ticker in monthly_data:
+            df_ticker = monthly_data[ticker]
+            
+            # Clean up the date column for x-axis
+            df_ticker['Date'] = pd.to_datetime(df_ticker['Date']).dt.normalize()
+            
+            fig_left.add_trace(
+                go.Scatter(
+                    x=df_ticker['Date'],
+                    y=df_ticker['Close'],
+                    name=ticker,
+                    mode='lines'
+                )
+            )
+
+    fig_left.update_layout(
+        title="Stock Closing Prices (Last 1 Month)",
+        paper_bgcolor="#14151b",
+        plot_bgcolor="#14151b",
+        font_color="white",
+        xaxis_title="Date",
+        yaxis_title="Close Price",
+        legend_title="Ticker"
     )
 
-    data.reset_index(level=0, inplace=True)
-
-
-
-    fig_left = go.Figure()
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['AAPL']['Adj Close'], name="AAPL")
-            )
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['AMZN']['Adj Close'], name="AMZN")
-            )
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['QCOM']['Adj Close'], name="QCOM")
-            )
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['META']['Adj Close'], name="META")
-            )
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['NVDA']['Adj Close'], name="NVDA")
-            )
-    fig_left.add_trace(
-                go.Scatter(x=data['Date'], y=data['JPM']['Adj Close'], name="JPM")
-            )
-    fig_left.update_layout(paper_bgcolor="#14151b", plot_bgcolor="#14151b", font_color="white")
-
+    # Convert figure to HTML
     plot_div_left = plot(fig_left, auto_open=False, output_type='div')
 
-
-    # ================================================ To show recent stocks ==============================================
+    # ================================= Recent Stocks =================================
     
-    df1 = yf.download(tickers = 'AAPL', period='1d', interval='1d')
-    df2 = yf.download(tickers = 'AMZN', period='1d', interval='1d')
-    df3 = yf.download(tickers = 'GOOGL', period='1d', interval='1d')
-    df4 = yf.download(tickers = 'UBER', period='1d', interval='1d')
-    df5 = yf.download(tickers = 'TSLA', period='1d', interval='1d')
-    df6 = yf.download(tickers = 'TWTR', period='1d', interval='1d')
+    tickers = ['AAPL', 'AMZN', 'QCOM', 'META', 'NVDA', 'JPM', 'GOOGL', 'UBER', 'TSLA']
+    recent_stocks_list = []
+    monthly_data = {} 
 
-    df1.insert(0, "Ticker", "AAPL")
-    df2.insert(0, "Ticker", "AMZN")
-    df3.insert(0, "Ticker", "GOOGL")
-    df4.insert(0, "Ticker", "UBER")
-    df5.insert(0, "Ticker", "TSLA")
-    df6.insert(0, "Ticker", "TWTR")
+    for ticker in tickers:
+        try:
+            df = yf.download(ticker, period='1mo', interval='1d', auto_adjust=False, timeout=60)
+            
+            if not df.empty:
+                # Store the full dataframe for the plot
+                # We need to flatten the columns for the plot data as well
+                plot_df = df.copy()
+                plot_df.columns = plot_df.columns.droplevel(1) 
+                monthly_data[ticker] = plot_df.reset_index()
+                
+                # --- THE ONE-LINE FIX IS HERE ---
+                df.columns = df.columns.droplevel(1)
 
-    df = pd.concat([df1, df2, df3, df4, df5, df6], axis=0)
-    df.reset_index(level=0, inplace=True)
-    df.columns = ['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Adj_Close', 'Volume']
-    convert_dict = {'Date': object}
-    df = df.astype(convert_dict)
-    df.drop('Date', axis=1, inplace=True)
+                # Get the last row of data from the now-simplified DataFrame
+                last_row = df.iloc[-1]
+                
+                # This logic now works perfectly because the columns are simple strings
+                recent_stocks_list.append({
+                    'Ticker': ticker,
+                    'Date': df.index[-1].strftime('%Y-%m-%d'),
+                    'Open': round(float(last_row['Open']), 2),
+                    'High': round(float(last_row['High']), 2),
+                    'Low': round(float(last_row['Low']), 2),
+                    'Close': round(float(last_row['Close']), 2),
+                    'Adj_Close': round(float(last_row['Adj Close']), 2),
+                    'Volume': int(last_row['Volume'])
+                })
+                
+        except Exception as e:
+            print(f"ERROR: Failed to download or process data for {ticker}. Reason: {e}")
+        
+        time.sleep(0.2)
 
-    json_records = df.reset_index().to_json(orient ='records')
-    recent_stocks = []
-    recent_stocks = json.loads(json_records)
+    if recent_stocks_list:
+       # df_recent_all = pd.concat(recent_stocks_list, axis=0)
+        recent_stocks = recent_stocks_list
+    else:
+        recent_stocks = []
+
+    #print(recent_stocks)  
 
     # ========================================== Page Render section =====================================================
-
     return render(request, 'index.html', {
         'plot_div_left': plot_div_left,
         'recent_stocks': recent_stocks
@@ -179,52 +232,80 @@ def predict(request, ticker_value, number_of_days):
 
 
 
-    # ========================================== Machine Learning ==========================================
-
-
+# ================================== Machine Learning Block ==================================
     try:
-        df_ml = yf.download(tickers = ticker_value, period='3mo', interval='1h')
+        forecast_out = int(number_of_days)
     except:
-        ticker_value = 'AAPL'
-        df_ml = yf.download(tickers = ticker_value, period='3mo', interval='1m')
+        forecast_out = 1
 
-    # Fetching ticker values from Yahoo Finance API 
-    df_ml = df_ml[['Adj Close']]
-    forecast_out = int(number_of_days)
-    df_ml['Prediction'] = df_ml[['Adj Close']].shift(-forecast_out)
-    # Splitting data for Test and Train
-    X = np.array(df_ml.drop('Prediction',axis=1))
-    # Handle missing values
+    # --- Download Data ---
+    try:
+        df_ml = yf.download(tickers=ticker_value, period='3mo', interval='1h')
+        if df_ml.empty:
+            df_ml = yf.download(tickers=ticker_value, period='3mo', interval='1d')
+    except Exception as e:
+        return render(request, "result.html", {"error": f"Failed to fetch data: {e}"})
 
+    if df_ml.empty:
+        return render(request, "result.html", {"error": "No stock data found for this ticker."})
+
+    # --- Flatten MultiIndex columns ---
+    if isinstance(df_ml.columns, pd.MultiIndex):
+        df_ml.columns = df_ml.columns.droplevel(1)
+
+    # --- Ensure 'Adj Close' exists ---
+    if 'Adj Close' not in df_ml.columns:
+        if 'Close' in df_ml.columns:
+            df_ml['Adj Close'] = df_ml['Close']
+        else:
+            return render(request, "result.html", {"error": "DataFrame has no 'Close' or 'Adj Close' columns."})
+
+    # --- Adjust forecast_out if too large ---
+    forecast_out = min(forecast_out, len(df_ml)-1)
+
+    # --- Create Prediction column ---
+    df_ml['Prediction'] = df_ml['Adj Close'].shift(-forecast_out)
+
+    # --- Drop rows where Prediction is NaN ---
+    df_ml.dropna(subset=['Prediction'], inplace=True)
+    if df_ml.empty:
+        return render(request, "result.html", {"error": "Not enough data to generate predictions."})
+
+    # --- Prepare features and target ---
+    X = np.array(df_ml.drop('Prediction', axis=1, errors='ignore'))
     X = preprocessing.scale(X)
+    y = np.array(df_ml['Prediction'])
+
+    # --- Split for forecast ---
     X_forecast = X[-forecast_out:]
     X = X[:-forecast_out]
-    y = np.array(df_ml['Prediction'])
     y = y[:-forecast_out]
-    X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size = 0.2)
-    # Applying Linear Regression
+
+    # --- Train/Test split and model ---
+    X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.2)
     clf = LinearRegression()
-    clf.fit(X_train,y_train)
-    # Prediction Score
+    clf.fit(X_train, y_train)
     confidence = clf.score(X_test, y_test)
-    # Predicting for 'n' days stock data
+
+    # --- Predict ---
     forecast_prediction = clf.predict(X_forecast)
     forecast = forecast_prediction.tolist()
 
+    # --- Compute last prediction info safely ---
+    last_prediction_info = {}
     if len(forecast) >= forecast_out:
-        day_last_prediction = forecast[forecast_out - 1]
+        last_date = dt.datetime.today() + dt.timedelta(days=forecast_out)
+        last_price = round(forecast[forecast_out - 1], 2)
+        last_prediction_info['Date'] = last_date.strftime('%Y-%m-%d')
+        last_prediction_info['Price'] = last_price
     else:
-        day_last_prediction = None
+        last_prediction_info['Date'] = "N/A"
+        last_prediction_info['Price'] = "N/A"
 
-    # ========================================== Plotting predicted data ======================================
+    # --- Build forecast DataFrame for plotting ---
+    pred_dates = [dt.datetime.today() + dt.timedelta(days=i) for i in range(len(forecast))]
+    pred_df = pd.DataFrame({"Date": pred_dates, "Prediction": forecast})
 
-
-    pred_dict = {"Date": [], "Prediction": []}
-    for i in range(0, len(forecast)):
-        pred_dict["Date"].append(dt.datetime.today() + dt.timedelta(days=i))
-        pred_dict["Prediction"].append(forecast[i])
-    
-    pred_df = pd.DataFrame(pred_dict)
     pred_fig = go.Figure([go.Scatter(x=pred_df['Date'], y=pred_df['Prediction'])])
     pred_fig.update_xaxes(rangeslider_visible=True)
     pred_fig.update_layout(paper_bgcolor="#14151b", plot_bgcolor="#14151b", font_color="white")
@@ -251,15 +332,109 @@ def predict(request, ticker_value, number_of_days):
             Sector = ticker.Sector[i]
             Industry = ticker.Industry[i]
             break
+# ========================================== Shows Differnce ==========================================
+
+    # Get last available closing price from historical data
+    last_closing_price = df['Close'].iloc[-1] if not df.empty else None
+
+    # Ensure forecast length is valid before extracting the last day's prediction
+    if len(forecast) >= forecast_out and last_closing_price is not None:
+        future_date = dt.datetime.today() + dt.timedelta(days=forecast_out)
+        day_last_prediction = round(forecast[forecast_out - 1], 2)
+
+        # Calculate price change
+        price_difference = round(day_last_prediction - last_closing_price, 2)
+        percentage_change = round((price_difference / last_closing_price) * 100, 2)
+
+        last_known_price = df_ml['Adj Close'].iloc[-1]
+        final_predicted_price = last_price 
+        price_difference = final_predicted_price - last_known_price
+        
+        # Determine Up/Down status
+        trend = "UP 🔼" if price_difference > 0 else "DOWN 🔻" if price_difference < 0 else "No Change"
+        
+        last_prediction_info = {
+            'Date': future_date.strftime('%Y-%m-%d'),
+            'Price': day_last_prediction,
+            'Last_Close': last_closing_price,
+            'Change': price_difference,
+            'Percentage_Change': percentage_change,
+            'Trend': trend
+        }
+    else:
+        last_prediction_info = {
+            'Date': "N/A",
+            'Price': "N/A",
+            'Last_Close': "N/A",
+            'Change': "N/A",
+            'Percentage_Change': "N/A",
+            'Trend': "N/A"
+        }
+        
+    # ======================== Fetch live/intraday data =======================
+    try:
+        # Try 1-hour interval for last 3 hours
+        df_live = yf.download(tickers=ticker_value, period='1d', interval='15m')
+        
+        # If no live intraday data, fallback to daily data
+        if df_live.empty:
+            df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
+            live_available = False
+        else:
+            live_available = True
+    except:
+        df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
+        live_available = False
+
+    if df_live.empty:
+        return render(request, "result.html", {"error": "No stock data available for plotting."})
+
+    # Flatten MultiIndex if needed
+    if isinstance(df_live.columns, pd.MultiIndex):
+        df_live.columns = df_live.columns.droplevel(1)
+
+    # Use 'Adj Close' if available, else 'Close'
+    if 'Adj Close' not in df_live.columns:
+        df_live['Adj Close'] = df_live['Close']
+
+    # Prepare plot
+    fig_live = go.Figure()
+
+    fig_live.add_trace(
+        go.Candlestick(
+            x=df_live.index,
+            open=df_live['Open'],
+            high=df_live['High'],
+            low=df_live['Low'],
+            close=df_live['Adj Close'],
+            name='Price'
+        )
+    )
+
+    fig_live.update_layout(
+        title=f"{ticker_value} {'Live' if live_available else 'Last Available'} Price",
+        xaxis_title='Time',
+        yaxis_title='Price (USD)',
+        paper_bgcolor="#14151b",
+        plot_bgcolor="#14151b",
+        font_color="white",
+    )
+
+    # Show rangeslider only for live/intraday data
+    fig_live.update_xaxes(rangeslider_visible=live_available)
+
+    # Convert to HTML div
+    plot_div_live = plot(fig_live, auto_open=False, output_type='div')
 
     # ========================================== Page Render section ==========================================
     
 
     return render(request, "result.html", context={         
         'plot_div_pred': plot_div_pred,
+        'plot_div':  plot_div_live,
         'confidence': confidence,
         'forecast': forecast,
-        'day_last_prediction': day_last_prediction,  
+        'last_prediction_info': last_prediction_info,
         'ticker_value': ticker_value,
         'number_of_days': number_of_days,
         'Symbol': Symbol,

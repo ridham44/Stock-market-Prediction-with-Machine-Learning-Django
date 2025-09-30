@@ -165,17 +165,17 @@
                 </tr>
               </thead>
               <tbody>
-                {% if recent_stocks %} {% for i in recent_stocks %}
+                {% for i in recent_stocks %}
                 <tr>
-                  <td>{{i.Ticker}}</td>
-                  <td>{{i.Open}}</td>
-                  <td>{{i.High}}</td>
-                  <td>{{i.Low}}</td>
-                  <td>{{i.Close}}</td>
-                  <td>{{i.Adj_Close}}</td>
-                  <td>{{i.Volume}}</td>
+                  <td>{{ i.Ticker }}</td>
+                  <td>{{ i.Open }}</td>
+                  <td>{{ i.High }}</td>
+                  <td>{{ i.Low }}</td>
+                  <td>{{ i.Close }}</td>
+                  <td>{{ i.Adj_Close }}</td>
+                  <td>{{ i.Volume }}</td>
                 </tr>
-                {% endfor %} {% endif %}
+                {% endfor %}
               </tbody>
             </table>
           </div>
