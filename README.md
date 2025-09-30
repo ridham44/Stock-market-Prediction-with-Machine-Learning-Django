@@ -1,3 +1,8 @@
+<img width="1871" height="877" alt="Screenshot 2025-09-30 172857" src="https://github.com/user-attachments/assets/4b7b83e7-cde5-4208-98e0-4d3a52fd8dac" />
+
+*******************************************************************************************************************************************************
+
+<img width="1555" height="803" alt="Screenshot 2025-09-30 172948" src="https://github.com/user-attachments/assets/d1b2e7e0-3aa1-45cf-a529-6c8d2b770bdd" />
 # Stock Market Prediction with Machine Learning and Django
 
 A web application that predicts live stock prices in the American market using machine learning algorithms and data retrieved from the Yahoo Finance API. This project combines the power of Python, Django, and machine learning to provide users with accurate stock price forecasts and insightful trend analysis.
