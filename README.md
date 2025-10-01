@@ -96,6 +96,3 @@ Contributions are welcome! To contribute:
 - **Ridham Patel**  
   *Founder and Owner of StockInsight*
 
----
-
-Feel free to customize this README to better suit your project and include additional details like screenshots or demo links.
