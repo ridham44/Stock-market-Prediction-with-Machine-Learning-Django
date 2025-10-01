@@ -247,7 +247,17 @@
             background: var(--dark);
             border-color: #00FFFF;
         }
+        .sidebar .navbar .navbar-nav .nav-link:hover,
+        .sidebar .navbar .navbar-nav .nav-link.active {
+            color: #00FFFF;
+            background: var(--dark);
+            border-color: #00FFFF;
+        }
 
+        .content .navbar .navbar-nav .nav-link:hover,
+        .content .navbar .navbar-nav .nav-link.active {
+            color: #00FFFF;
+        }
         .content .navbar .navbar-nav .nav-link:hover,
         .content .navbar .navbar-nav .nav-link.active {
             color: #00FFFF;
@@ -257,7 +267,14 @@
         .bootstrap-datetimepicker-widget table td.active:hover {
             background: #00FFFF;
         }
+        .bootstrap-datetimepicker-widget table td.active,
+        .bootstrap-datetimepicker-widget table td.active:hover {
+            background: #00FFFF;
+        }
 
+        .bootstrap-datetimepicker-widget table td.today::before {
+            border-bottom-color: #00FFFF;
+        }
         .bootstrap-datetimepicker-widget table td.today::before {
             border-bottom-color: #00FFFF;
         }
@@ -272,7 +289,22 @@
             border-radius: 15px;
             transition: .5s;
         }
+        .testimonial-carousel .owl-dot {
+            position: relative;
+            display: inline-block;
+            margin: 0 5px;
+            width: 15px;
+            height: 15px;
+            border: 5px solid #00FFFF;
+            border-radius: 15px;
+            transition: .5s;
+        }
 
+        .testimonial-carousel .owl-dot.active {
+            background: var(--dark);
+            border-color: #00FFFF;
+        }
+    </style>
         .testimonial-carousel .owl-dot.active {
             background: var(--dark);
             border-color: #00FFFF;

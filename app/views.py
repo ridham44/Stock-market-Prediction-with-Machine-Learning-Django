@@ -206,30 +206,60 @@ def predict(request, ticker_value, number_of_days):
         return render(request, 'Overflow_days.html', {})
     
 
-    fig = go.Figure()
-    fig.add_trace(go.Candlestick(x=df.index,
-                open=df['Open'],
-                high=df['High'],
-                low=df['Low'],
-                close=df['Close'], name = 'market data'))
-    fig.update_layout(
-                        title='{} live share price evolution'.format(ticker_value),
-                        yaxis_title='Stock Price (USD per Shares)')
-    fig.update_xaxes(
-    rangeslider_visible=True,
-    rangeselector=dict(
-        buttons=list([
-            dict(count=15, label="15m", step="minute", stepmode="backward"),
-            dict(count=45, label="45m", step="minute", stepmode="backward"),
-            dict(count=1, label="HTD", step="hour", stepmode="todate"),
-            dict(count=3, label="3h", step="hour", stepmode="backward"),
-            dict(step="all")
-        ])
+     # ======================== Fetch live/intraday data =======================
+    try:
+        # Try 1-hour interval for last 3 hours
+        df_live = yf.download(tickers=ticker_value, period='1d', interval='15m')
+        
+        # If no live intraday data, fallback to daily data
+        if df_live.empty:
+            df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
+            live_available = False
+        else:
+            live_available = True
+    except:
+        df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
+        live_available = False
+
+    if df_live.empty:
+        return render(request, "result.html", {"error": "No stock data available for plotting."})
+
+    # Flatten MultiIndex if needed
+    if isinstance(df_live.columns, pd.MultiIndex):
+        df_live.columns = df_live.columns.droplevel(1)
+
+    # Use 'Adj Close' if available, else 'Close'
+    if 'Adj Close' not in df_live.columns:
+        df_live['Adj Close'] = df_live['Close']
+
+    # Prepare plot
+    fig_live = go.Figure()
+
+    fig_live.add_trace(
+        go.Candlestick(
+            x=df_live.index,
+            open=df_live['Open'],
+            high=df_live['High'],
+            low=df_live['Low'],
+            close=df_live['Adj Close'],
+            name='Price'
         )
     )
-    fig.update_layout(paper_bgcolor="#14151b", plot_bgcolor="#14151b", font_color="white")
-    plot_div = plot(fig, auto_open=False, output_type='div')
 
+    fig_live.update_layout(
+        title=f"{ticker_value} {'Live' if live_available else 'Last Available'} Price",
+        xaxis_title='Time',
+        yaxis_title='Price (USD)',
+        paper_bgcolor="#14151b",
+        plot_bgcolor="#14151b",
+        font_color="white",
+    )
+
+    # Show rangeslider only for live/intraday data
+    fig_live.update_xaxes(rangeslider_visible=live_available)
+
+    # Convert to HTML div
+    plot_div_live = plot(fig_live, auto_open=False, output_type='div')
 
 
 # ================================== Machine Learning Block ==================================
@@ -370,62 +400,6 @@ def predict(request, ticker_value, number_of_days):
             'Percentage_Change': "N/A",
             'Trend': "N/A"
         }
-        
-    # ======================== Fetch live/intraday data =======================
-    try:
-        # Try 1-hour interval for last 3 hours
-        df_live = yf.download(tickers=ticker_value, period='1d', interval='15m')
-        
-        # If no live intraday data, fallback to daily data
-        if df_live.empty:
-            df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
-            live_available = False
-        else:
-            live_available = True
-    except:
-        df_live = yf.download(tickers=ticker_value, period='5d', interval='1d')
-        live_available = False
-
-    if df_live.empty:
-        return render(request, "result.html", {"error": "No stock data available for plotting."})
-
-    # Flatten MultiIndex if needed
-    if isinstance(df_live.columns, pd.MultiIndex):
-        df_live.columns = df_live.columns.droplevel(1)
-
-    # Use 'Adj Close' if available, else 'Close'
-    if 'Adj Close' not in df_live.columns:
-        df_live['Adj Close'] = df_live['Close']
-
-    # Prepare plot
-    fig_live = go.Figure()
-
-    fig_live.add_trace(
-        go.Candlestick(
-            x=df_live.index,
-            open=df_live['Open'],
-            high=df_live['High'],
-            low=df_live['Low'],
-            close=df_live['Adj Close'],
-            name='Price'
-        )
-    )
-
-    fig_live.update_layout(
-        title=f"{ticker_value} {'Live' if live_available else 'Last Available'} Price",
-        xaxis_title='Time',
-        yaxis_title='Price (USD)',
-        paper_bgcolor="#14151b",
-        plot_bgcolor="#14151b",
-        font_color="white",
-    )
-
-    # Show rangeslider only for live/intraday data
-    fig_live.update_xaxes(rangeslider_visible=live_available)
-
-    # Convert to HTML div
-    plot_div_live = plot(fig_live, auto_open=False, output_type='div')
-
     # ========================================== Page Render section ==========================================
     
 
