@@ -174,6 +174,8 @@ def ticker(request):
         'ticker_list': ticker_list
     })
 
+def about(request):
+    return render(request, 'about.html', {})
 
 # The Predict Function to implement Machine Learning as well as Plotting
 def predict(request, ticker_value, number_of_days):
@@ -372,21 +374,25 @@ def predict(request, ticker_value, number_of_days):
         future_date = dt.datetime.today() + dt.timedelta(days=forecast_out)
         day_last_prediction = round(forecast[forecast_out - 1], 2)
 
-        # Calculate price change
-        price_difference = round(day_last_prediction - last_closing_price, 2)
-        percentage_change = round((price_difference / last_closing_price) * 100, 2)
+        # ✅ Ensure last closing price is a float rounded to 2 decimals
+        last_close_val = float(last_closing_price.iloc[-1]) if hasattr(last_closing_price, "iloc") else float(last_closing_price)
+        last_close_val = round(last_close_val, 2)
 
-        last_known_price = df_ml['Adj Close'].iloc[-1]
-        final_predicted_price = last_price 
-        price_difference = final_predicted_price - last_known_price
-        
+        # ✅ Extract date properly
+        last_close_date = df_ml.index[-1].strftime("%Y-%m-%d %H:%M:%S")
+
+        # Calculate price change
+        price_difference = round(day_last_prediction - last_close_val, 2)
+        percentage_change = round((price_difference / last_close_val) * 100, 2)
+
         # Determine Up/Down status
-        trend = "UP 🔼" if price_difference > 0 else "DOWN 🔻" if price_difference < 0 else "No Change"
-        
+        trend = "UP 🔺" if price_difference > 0 else "DOWN 🔻" if price_difference < 0 else "No Change"
+
         last_prediction_info = {
             'Date': future_date.strftime('%Y-%m-%d'),
             'Price': day_last_prediction,
-            'Last_Close': last_closing_price,
+            'Last_Close': last_close_val,
+            'Last_Close_Date': last_close_date,
             'Change': price_difference,
             'Percentage_Change': percentage_change,
             'Trend': trend
@@ -396,6 +402,7 @@ def predict(request, ticker_value, number_of_days):
             'Date': "N/A",
             'Price': "N/A",
             'Last_Close': "N/A",
+            'Last_Close_Date': "N/A",
             'Change': "N/A",
             'Percentage_Change': "N/A",
             'Trend': "N/A"

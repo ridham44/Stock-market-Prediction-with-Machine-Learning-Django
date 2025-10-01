@@ -1,493 +1,110 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <title>Stock Market Prediction</title>
-  <link rel="shortcut icon" href="../../app/static/image/user.webp" type="image/jpg">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="" name="keywords" />
-  <meta content="" name="description" />
+  <link rel="shortcut icon" href="{% static 'image/user.webp' %}" type="image/png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google Web Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
-    rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Icon Font Stylesheet -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Libraries Stylesheet -->
-  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet" />
-  <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Customized Bootstrap Stylesheet -->
+  <!-- Bootstrap -->
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
 
-  <!-- Template Stylesheet -->
-  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  <!-- Custom Glass CSS -->
+  <link href="{% static 'css/style.css' %}?v=2" rel="stylesheet" />
 
 </head>
 
 <body>
-  <video autoplay loop muted style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1;
-      ">
-    <source src="{% static 'imag' %}" type="video/mp4" />
-  </video>
 
-  <div class="container-fluid position-relative d-flex p-0">
-    <!-- Spinner Start -->
-    <div id="spinner"
-      class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
+  <!-- Navbar -->
+  <header class="navbar glass-card">
+    <div class="navbar-left">
+      <img src="{% static 'image/user.webp' %}" alt="Logo" class="logo-img" />
+      <span class="logo-text">StocksInsight</span>
     </div>
-    <!-- Spinner End -->
-
-    <!-- Sidebar Start -->
-    <div class="sidebar pe-4 pb-3">
-      <nav class="navbar bg-secondary navbar-dark">
-        <a href="#" class="navbar-brand mx-4 mb-3">
-          <h3 class="text-primary">
-            <img class="rounded-circle" src="{% static 'image/user.webp' %}" alt="" style="width: 40px; height: 40px" />
-            StocksInsight
-          </h3>
-        </a>
-        <div class="d-flex align-items-center ms-4 mb-4">
-          <div class="position-relative">
-            <img class="rounded-circle" src="{% static 'image/user.png' %}" alt="" style="width: 40px; height: 40px" />
-            <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
-            </div>
-          </div>
-          <div class="ms-3">
-            <h6 class="mb-0">Welcome</h6>
-            <span>Guest</span>
-          </div>
-        </div>
-        <div class="navbar-nav w-100">
-          <a href="#" class="nav-item nav-link active"><i class="fa fa-home me-2"></i>Home</a>
-          <a href="/search" class="nav-item nav-link"><i class="fa fa-search me-2"></i>Predict</a>
-          <a href="/ticker" class="nav-item nav-link"><i class="fa fa-list-alt me-2"></i>Ticker Info</a>
-        </div>
-      </nav>
+    <div class="navbar-right">
+      <a href="#" class="active">Home</a>
+      <a href="/search">Predict</a>
+      <a href="/ticker">Ticker Info</a>
+      <a href="/about">About us</a>
     </div>
-    <!-- Sidebar End -->
+  </header>
 
-    <!-- Content Start -->
-    <div class="content">
-      <!-- Navbar Start -->
-      <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-        <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-          <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
-        </a>
-        <a href="#" class="sidebar-toggler flex-shrink-0">
-          <i class="fa fa-bars"></i>
-        </a>
-        <form class="d-none d-md-flex ms-4">
-          <input class="form-control bg-dark border-0" type="search" placeholder="Search" />
-        </form>
-        <div class="navbar-nav align-items-center ms-auto">
-          <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-              <img class="rounded-circle me-lg-2" src="{% static 'image/user.png' %}" alt=""
-                style="width: 40px; height: 40px" />
-              <span class="d-none d-lg-inline-flex">Guest</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-              <a href="/search" class="dropdown-item">Predict</a>
-              <a href="/ticker" class="dropdown-item">Ticker Info</a>
-            </div>
-          </div>
-        </div>
-      </nav>
-      <!-- Navbar End -->
+  <!-- Hero Running Text -->
+  <section class="hero glass-card">
+    <h2 id="running-text">Welcome to Stock Insight</h2>
+    <p>"📈 Your gateway to smarter, real-time market predictions 💹"</p>
+  </section>
 
-      <!--Runing name logo-->
-      <div class="container-fluid pt-4 px-3">
-        <div class="bg-success rounded-top p-4">
-          <h2 style="animation: running-text 10s linear infinite; color: orange; text-shadow: 2px 2px 4px #000;">
-            <span id="running-text">Welcome to Stock Insight</span>
-          </h2>
-          <div class="row">
-            <div class="col-12 col-sm-6 text-center text-sm-start"></div>
-          </div>
-        </div>
-      </div>
-
-      <!--Ending Runing name and logo-->
-
-      <!-- Sales Chart Start -->
-      <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-          <div class="col-sm-12 col-xl-12">
-            <div class="bg-secondary text-center rounded p-4">
-              <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Active Stocks</h6>
-                <a href="">Show All</a>
-              </div>
-              {% block Left_Plot %} {% autoescape off %} {{ plot_div_left }}
-              {% endautoescape %} {% endblock Left_Plot %}
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Sales Chart End -->
-
-      <!-- Recent Sales Start -->
-      <div class="container-fluid pt-4 px-4">
-        <div class="bg-secondary text-center rounded p-4">
-          <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Recent Stocks</h6>
-            <a href="https://finance.yahoo.com/trending-tickers">Show All</a>
-          </div>
-          <div class="table-responsive">
-            <table class="table text-start align-middle table-bordered table-hover mb-0">
-              <thead>
-                <tr class="text-white">
-                  <th scope="col">Ticker</th>
-                  <th scope="col">Open</th>
-                  <th scope="col">High</th>
-                  <th scope="col">Low</th>
-                  <th scope="col">Close</th>
-                  <th scope="col">Adj. Close</th>
-                  <th scope="col">Volume</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for i in recent_stocks %}
-                <tr>
-                  <td>{{ i.Ticker }}</td>
-                  <td>{{ i.Open }}</td>
-                  <td>{{ i.High }}</td>
-                  <td>{{ i.Low }}</td>
-                  <td>{{ i.Close }}</td>
-                  <td>{{ i.Adj_Close }}</td>
-                  <td>{{ i.Volume }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <!-- Recent Sales End -->
-      <!--========================================= FOOTER ===============================================-->
-      <footer class="footer">
-        <div class="footer__container">
-          <!-- First Column -->
-          <div class="footer__content">
-            <a href="#" class="footer__logo">Stock Insight</a>
-            <p class="footer__description">
-              StockInsight is a powerful tool for investors and traders, offering insights into stock market trends.
-              It provides real-time data, interactive charts, and performance analysis to help users make informed
-              decisions. With its user-friendly interface and advanced analytics, StockInsight simplifies market
-              tracking, making it easier to stay updated and take advantage of opportunities.
-            </p>
-          </div>
-          <!-- Second Column -->
-          <div class="footer__content">
-            <h3 class="footer__title">Company</h3>
-            <div class="footer__links">
-              <ul class="footer__links__list">
-                <li><a href="#" class="footer__link">Privacy & Policy</a></li>
-                <li><a href="#" class="footer__link">About us</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="footer__content">
-            <h5 className="footer__title" style="color: #000;">Contact us:</h5>
-            <p className="footer__description">
-              Mobile No : +91 9123456789
-              <br />
-              Email : StockInsight@gmail.com
-            </p>
-          </div>
-      </footer>
-      <footer class="footer">
-        <span class="footer__copy">
-          <a target="_blank" href="index.html" class="footer__dev-link">
-            Ridham Patel </a>
-          &#169;All rigths reserved
-        </span>
-        <div id="Date"></div>
-      </footer>
+  <!-- Active Stocks -->
+  <section class="glass-card">
+    <div class="section-header">
+      <h5>Active Stocks</h5>
+      <a href="#">Show All</a>
     </div>
-    <!-- Content End -->
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-  </div>col-xl-12
+    {% block Left_Plot %}{% autoescape off %}{{ plot_div_left }}{% endautoescape %}{% endblock Left_Plot %}
+  </section>
 
-  <!-- JavaScript Libraries -->
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"
-    integrity="sha512-sW/w8s4RWTdFFSduOTGtk4isV1+190E/GghVffMA9XczdJ2MDzSzLEubKAs5h0wzgSJOQTRYyaz73L3d6RtJSg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-  <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-  <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-  <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
-  <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
-  <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-  <script src="path/to/font-awesome/css/all.min.css"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Recent Stocks Table -->
+  <section class="glass-card">
+    <div class="section-header">
+      <h5>Recent Stocks</h5>
+      <a href="https://finance.yahoo.com/trending-tickers">Show All</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table glass-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Adj. Close</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in recent_stocks %}
+          <tr>
+            <td>{{ i.Ticker }}</td>
+            <td>{{ i.Open }}</td>
+            <td>{{ i.High }}</td>
+            <td>{{ i.Low }}</td>
+            <td>{{ i.Close }}</td>
+            <td>{{ i.Adj_Close }}</td>
+            <td>{{ i.Volume }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-  <style>
-    @keyframes running-text {
-      0% {
-        transform: translateX(100%);
-      }
+  <!-- Footer -->
+  <footer class="footer glass-card">
+    <p> Created by
+    <h4> <a href="#">
+        Ridham Patel
+      </a></h4> | All rights reserved &copy;StockInsight |</p>
+  </footer>
+  </main>
 
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-
-    @keyframes color-change {
-      0% {
-        color: red;
-      }
-
-      25% {
-        color: blue;
-      }
-
-      50% {
-        color: yellow;
-      }
-
-      75% {
-        color: orange;
-      }
-
-      100% {
-        color: purple;
-      }
-    }
-  </style>
-
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // JavaScript to change the text color
+    // Running text animation
     const runningText = document.getElementById('running-text');
-    runningText.style.animation = 'color-change 5s linear infinite';
+    runningText.style.animation = 'running-text 12s linear infinite, color-change 8s infinite';
   </script>
-
-  <style>
-    .sidebar .navbar .navbar-nav .nav-link:hover,
-    .sidebar .navbar .navbar-nav .nav-link.active {
-      color: #00FFFF;
-      background: var(--dark);
-      border-color: #00FFFF;
-    }
-
-    .content .navbar .navbar-nav .nav-link:hover,
-    .content .navbar .navbar-nav .nav-link.active {
-      color: #00FFFF;
-    }
-
-    .bootstrap-datetimepicker-widget table td.active,
-    .bootstrap-datetimepicker-widget table td.active:hover {
-      background: #00FFFF;
-    }
-
-    .bootstrap-datetimepicker-widget table td.today::before {
-      border-bottom-color: #00FFFF;
-    }
-
-    .testimonial-carousel .owl-dot {
-      position: relative;
-      display: inline-block;
-      margin: 0 5px;
-      width: 15px;
-      height: 15px;
-      border: 5px solid #00FFFF;
-      border-radius: 15px;
-      transition: .5s;
-    }
-
-    .testimonial-carousel .owl-dot.active {
-      background: var(--dark);
-      border-color: #00FFFF;
-    }
-
-    /*=============== FOOTER ===============*/
-    .footer {
-      background-color: aliceblue;
-      padding: 40px 0;
-      font-weight: 12px;
-    }
-
-    .footer__container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .footer__content {
-      flex: 1;
-      padding: 0 10px;
-    }
-
-    .footer__logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-      text-decoration: none;
-      margin-bottom: 10px;
-      display: inline-block;
-    }
-
-    .footer__description {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .footer__title {
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .footer__links,
-    .footer__social {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .footer__link,
-    .footer__social-link {
-      color: #666;
-      text-decoration: none;
-      font-size: 14px;
-      margin-bottom: 5px;
-      display: inline-block;
-    }
-
-    .footer__link:hover,
-    .footer__social-link:hover {
-      color: #333;
-    }
-
-    .footer__social-link i {
-      font-size: 20px;
-      color: #666;
-    }
-
-    .footer__links {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .footer__links__list {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .footer__links__list:first-child {
-      margin-right: 20px;
-    }
-
-    .footer__links__list li {
-      display: inline;
-      margin-right: 10px;
-    }
-
-    .footer__links__list li:last-child {
-      margin-right: 0;
-    }
-
-    @media screen and (max-width: 768px) {
-      .footer__container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .footer__content {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-    }
-
-    .footer__copy {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      font-size: var(--smaller-font-size);
-      color: rgb(199, 158, 47);
-    }
-
-    .footer__dev-link {
-      color: red;
-      text-decoration: none;
-    }
-
-    .footer__dev-link:hover {
-      text-decoration: underline;
-    }
-
-    #Date {
-      text-align: center;
-      color: yellowgreen;
-    }
-
-    .social-icons {
-      color: #333;
-      font-weight: bold;
-    }
-
-    .fa {
-      padding: 20px;
-      font-size: 30px;
-      width: 50px;
-      text-align: center;
-      text-decoration: none;
-      margin: 5px 2px;
-      border-radius: 50%;
-    }
-
-    .fa:hover {
-      opacity: 0.7;
-    }
-
-    .fa-facebook {
-      background: #3b5998;
-      color: white;
-    }
-
-    .fa-twitter {
-      background: #55acee;
-      color: white;
-    }
-
-    .fa-youtube {
-      background: #bb0000;
-      color: white;
-    }
-
-    .fa-instagram {
-      background: #125688;
-      color: white;
-    }
-  </style>
-  <!-- Template Javascript -->
-  <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>

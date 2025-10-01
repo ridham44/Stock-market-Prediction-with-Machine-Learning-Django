@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>About Us | StockInsight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+
+    <!-- Custom Glass CSS -->
+    <link href="{% static 'css/style.css' %}?v=3" rel="stylesheet" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar glass-card">
+        <div class="navbar-left">
+            <img src="{% static 'image/user.webp' %}" alt="Logo" class="logo-img" />
+            <span class="logo-text">StocksInsight</span>
+        </div>
+        <div class="navbar-right">
+            <a href="{% url 'index' %}" class="nav-link">Home</a>
+            <a href="{% url 'search' %}" class="nav-link">Predict</a>
+            <a href="{% url 'ticker' %}" class="nav-link">Ticker Info</a>
+            <a href="#" class="nav-link active">About Us</a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section class="hero glass-card" style="max-width: 900px; margin: 40px auto;">
+        <h2 class="mb-3">About StockInsight</h2>
+        <p class="center-text">
+            <strong>StockInsight</strong> is a powerful web platform designed for investors, enthusiasts, and students
+            to explore stock market trends and make informed decisions. It leverages
+            <strong>Python</strong>, <strong>Django</strong>, <strong>Machine Learning</strong>, and
+            <strong>AI algorithms</strong> to analyze historical stock data and predict future trends.
+        </p>
+        <hr>
+        <h3 class="features-heading">Features of StockInsight include:</h3>
+        <ul class="features-list">
+            <li>Real-time stock predictions based on historical trends 📈</li>
+            <li>Technical indicators for smarter investment decisions</li>
+            <li>Detailed ticker information including market cap, sector, and IPO year</li>
+            <li>Intuitive interface with glassmorphism design for smooth user experience</li>
+        </ul>
+        <hr>
+        <p class="center-text">
+            This website was created by <strong>Ridham Patel</strong> as a Semester 4 project on
+            <strong>Python: Stock Prediction using Django & Machine Learning</strong>. StockInsight provides a hands-on
+            platform to explore the stock market with the power of AI and ML.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass-card">
+        <p> Created by
+        <h4> <a href="#">
+                Ridham Patel
+            </a></h4> | All rights reserved &copy;StockInsight |</p>
+    </footer>
+
+
+</body>
+
+</html>
